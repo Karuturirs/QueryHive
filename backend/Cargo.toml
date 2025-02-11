@@ -1,7 +1,11 @@
 [package]
-name = "backend"
+name = "QuickHive"
 version = "0.1.0"
 edition = "2021"
+
+[[bin]]
+name = "QuickHive"
+path = "src/main.rs"
 
 [dependencies]
 pyo3 = { version = "0.23.4", features = ["auto-initialize", "extension-module"] }
@@ -17,7 +21,6 @@ prometheus = "0.13"
 clap = "3.0"  # For handling CLI arguments
 
 
-[features]
-default = ["api"]  # Default mode will be the API
-api = []           # API mode (Axum web server)
-cli = []           # CLI mode
+[dev-dependencies]
+tempfile = "3.16.0" 
+

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QueryHive</title>
+</head>
+<body>
+    <!-- This is where Elm will mount your app -->
+    <div id="elm-app"></div>
+
+    <!-- Include the compiled Elm JavaScript -->
+    <script src="/main.js"></script>
+    <script>
+        // Initialize the Elm app and mount it to the div with id "elm-app"
+        const app = Elm.Main.init({
+            node: document.getElementById("elm-app"),
+            flags: {} // Pass any initial flags here if your Elm app requires them
+        });
+    </script>
+</body>
+</html>
