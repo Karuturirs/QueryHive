@@ -1,33 +1,36 @@
-use clap::{App, Arg};
+use axum::{routing::{get}, Router};
+use hyper::Server;
+use log::{info, error};
+use std::net::SocketAddr;
+use crate::health::{liveness, readiness, health_check};
+use crate::metrics::metrics;
+use crate::setup::{setup};
 
-#[cfg(feature = "api")]
-mod api; // API code in api.rs
-
-#[cfg(feature = "cli")]
-mod cli; // CLI code in cli.rs
-
+mod health;
+mod metrics;
+mod setup;
+mod config;
 
 #[tokio::main]
-async fn main() {
-    let matches = App::new("QueryHive 🧠✨ CLI and API")
-        .version("1.0")
-        .about("QueryHive 🧠✨ CLI and API example")
-        .arg(Arg::new("mode")
-            .short('m')
-            .long("mode")
-            .takes_value(true)
-            .help("Specify the mode (cli or api)"))
-        .get_matches();
+pub async fn main() {
+    // Setup logging and configuration
+    setup().await;
 
-    let mode = matches.value_of("mode").unwrap_or("api");
+    // Set up Axum routes
+    let app = Router::new()
+        .route("/liveness", get(liveness))
+        .route("/readiness", get(readiness))
+        .route("/health", get(health_check))
+        .route("/metrics", get(metrics));
 
-    if mode == "cli" {
-        // Run CLI application
-        println!("Running in CLI mode");
-        cli::run(); // CLI functionality
-    } else {
-        // Run Web API
-        println!("Running in API mode");
-        api::run(); // Web API functionality
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3001));
+    info!("🚀 The server is ready to accept requests on {}", addr);
+
+    // Start the server
+    if let Err(e) = Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await
+    {
+        error!("Server error: {}", e);
     }
 }
