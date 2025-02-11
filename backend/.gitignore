@@ -1,0 +1,31 @@
+# Dependency directory (Cargo's default location)
+target/
+
+# Build outputs
+**/*.rs.bk
+
+# Cargo.lock for libraries that are not intended for public releases
+# (You may want to keep Cargo.lock for applications)
+Cargo.lock
+
+# Rust's generated files
+*.rs.bk
+
+# IDE/editor directories and settings
+.vscode/
+.idea/
+
+# macOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+
+# NixOS files
+.nix/
+
+# vim swap files
+*.swp
+
+# Emacs backup files
+*~

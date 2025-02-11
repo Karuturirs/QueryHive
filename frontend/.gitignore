@@ -1,0 +1,22 @@
+# Elm's build output directory
+elm-stuff/
+
+# Build files created by the Elm compiler
+*.elmo
+*.html
+
+# IDE/editor directories and settings
+.vscode/
+.idea/
+
+# macOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+
+# vim swap files
+*.swp
+
+# Emacs backup files
+*~
