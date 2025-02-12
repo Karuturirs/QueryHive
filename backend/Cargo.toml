@@ -1,16 +1,16 @@
 [package]
-name = "QuickHive"
+name = "QueryHive"
 version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "QuickHive"
+name = "QueryHive"
 path = "src/main.rs"
 
 [dependencies]
 pyo3 = { version = "0.23.4", features = ["auto-initialize", "extension-module"] }
 axum = "0.6"
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1.43.0", features = ["full"] }
 tower = "0.4"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
@@ -18,8 +18,8 @@ log = "0.4"
 env_logger = "0.9"
 hyper = "0.14"  # For HTTP server
 prometheus = "0.13"
-clap = "3.0"  # For handling CLI arguments
-
+clap = { version = "4", features = ["derive"], optional = true }
+tower-http = { version = "0.4", features = ["cors","fs"] }
 
 [dev-dependencies]
 tempfile = "3.16.0" 

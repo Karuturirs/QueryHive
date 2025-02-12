@@ -1,18 +1,26 @@
-use log::{info};
+use log::info;
+use axum::Json;
+use serde::Serialize;
 
-pub async fn liveness() -> &'static str {
+#[derive(Serialize)]
+pub struct HealthResponse {
+   pub status: String,
+}
+
+
+pub async fn liveness()  -> Json<HealthResponse> {
     info!("Liveness check hit");
-    "OK"
+    Json(HealthResponse { status: "OK".to_string() })
 }
 
-pub async fn readiness() -> &'static str {
+pub async fn readiness()  -> Json<HealthResponse> {
     info!("Readiness check hit");
-    "OK"
+    Json(HealthResponse { status: "OK".to_string() })
 }
 
-pub async fn health_check() -> &'static str {
+pub async fn health_check()  -> Json<HealthResponse> {
     info!("Health check hit");
-    "OK"
+    Json(HealthResponse { status: "OK".to_string() })
 }
 
 
@@ -22,16 +30,16 @@ mod tests {
 
     #[tokio::test]
     async fn test_liveness() {
-        assert_eq!(liveness().await, "OK");
+        assert_eq!(liveness().await.status, "OK");
     }
 
     #[tokio::test]
     async fn test_readiness() {
-        assert_eq!(readiness().await, "OK");
+        assert_eq!(readiness().await.status, "OK");
     }
 
     #[tokio::test]
     async fn test_health_check() {
-        assert_eq!(health_check().await, "OK");
+        assert_eq!(health_check().await.status, "OK");
     }
 }
