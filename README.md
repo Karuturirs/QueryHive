@@ -1,16 +1,30 @@
 # QueryHive 🧠✨
 A RAG application built for quering day to day needs
 
-### Design
+#### Features:
+ * Support of openAI & Opensource LLM
+ * Chuncking/Embedding - cost effective
+ * Enabling upload for large documents and data
+ * CLI options
+
+
+ > Audience: Tech/Business (with basic sofware expereience)
+
+### Design:
 
 ![Flow Diagram](./samples/design.png)
 
-#### Tech Stack
+#### Tech Stack:
 
 * UI - ELM
 * Backend Services - Rust/Python
 * VectorDB - Elastic
 * LLM - Opensource/OpenAPI
+
+
+
+#### Setup:
+
 
 pip install sentence-transformers transformers openai tiktoken nltk
 

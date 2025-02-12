@@ -32,9 +32,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy Rust binary and frontend files from builder stage
-COPY --from=backend-builder /backend/target/release/backend ./backend
+COPY --from=backend-builder /backend/target/release/QueryHive ./QueryHive
 COPY --from=backend-builder /backend/static/ ./static/
 
 # Expose ports and run the app
 EXPOSE 3001
-CMD ["./backend"]
+CMD ["./QueryHive"]
