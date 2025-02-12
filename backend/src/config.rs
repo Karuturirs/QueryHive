@@ -1,7 +1,7 @@
-use serde::{Deserialize};
+use serde::Deserialize;
 use std::fs;
 use std::env;
-use log::{info};
+use log::info;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Config {
@@ -30,9 +30,9 @@ pub fn load_config() -> Config {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs::File;
-    use std::io::Write;
-    use tempfile::tempdir;
+    // use std::fs::File;
+    // use std::io::Write;
+    // use tempfile::tempdir;
 
     #[test]
     fn test_load_config_success() {
