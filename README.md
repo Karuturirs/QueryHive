@@ -1,6 +1,17 @@
 # QueryHive 🧠✨
 A RAG application built for quering day to day needs
 
+### Design
+
+![Flow Diagram](./samples/design.png)
+
+#### Tech Stack
+
+* UI - ELM
+* Backend Services - Rust/Python
+* VectorDB - Elastic
+* LLM - Opensource/OpenAPI
+
 pip install sentence-transformers transformers openai tiktoken nltk
 
 
