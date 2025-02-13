@@ -6,9 +6,10 @@ A RAG application built for quering day to day needs
  * Chuncking/Embedding - cost effective
  * Enabling upload for large documents and data
  * CLI options
+ * Scalability 
 
 
- > Audience: Tech/Business (with basic sofware expereience)
+ > Audience: Tech/Business (with basic sofware experience)
 
 ### Design:
 

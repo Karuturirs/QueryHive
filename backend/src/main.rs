@@ -1,10 +1,6 @@
 use crate::setup::setup;
-use log::error;
-use std::env;
 
 mod hive;
-
-
 mod health;
 mod metrics;
 mod setup;
