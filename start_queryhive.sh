@@ -35,8 +35,9 @@ fi
 echo "Starting the backend..."
 pwd 
 cd ./backend
-pwd
-nohup cargo run & echo $! > ../backend.pid
+export APP_ENV=local
+export RUST_LOG=info
+cargo run & echo $! > ../backend.pid
 
 # Start the frontend
 echo "Starting the frontend..."
@@ -44,3 +45,5 @@ pwd
 cd ../frontend
 pwd
 elm reactor --port=3002 &  echo $! > ../frontend.pid
+
+open http://localhost:3002/src/Main.elm 

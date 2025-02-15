@@ -57,12 +57,6 @@ cargo add pyo3 --features "auto-initialize"
 
 
 export RUST_LOG=info  # This will enable logs at info level and higher
+export APP_ENV=local
 cargo run
-
-docker run -p 127.0.0.1:9200:9200 -d --name hive-es \
-  -e "discovery.type=single-node" \
-  -e "xpack.security.enabled=false" \
-  -e "xpack.license.self_generated.type=basic" \
-  -v "elasticsearch-data:/usr/share/elasticsearch/data" \
-  docker.elastic.co/elasticsearch/elasticsearch:8.15.0
 
