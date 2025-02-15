@@ -23,6 +23,13 @@ struct SearchParams {
     query: String,
 }
 
+
+#[derive(Debug, Serialize, Deserialize)]
+struct ChatInput {
+    chatInput: String,
+    fileName: Option<String>,
+}
+
 #[derive(Deserialize, Serialize, Debug)]
 struct Document {
     id: Option<String>,
@@ -66,6 +73,7 @@ pub async fn run(config: Config) {
 
     let app = Router::new()
         .route("/search", get(query))
+        .route("/chat", post(chat))
         .route("/documents", post(add_document).get(get_documents))
         .layer(cors)
         .with_state(config);
@@ -94,6 +102,20 @@ pub async fn run(config: Config) {
 async fn query(State(state): State<Config>, Query(params): Query<SearchParams>) -> Result<AxumJson<Value>, (StatusCode, AxumJson<Value>)> {
     let results = &params.query;
     Ok(AxumJson(json!({ "results": results })))
+}
+
+async fn chat(Json(payload): Json<ChatInput>) -> Result<AxumJson<Value>, (StatusCode, AxumJson<Value>)> {
+    // Process the chat input
+    let chat_input = payload.chatInput;
+    let file_name = payload.fileName.unwrap_or_else(|| "No file attached".to_string());
+
+    // Here you can add your logic to process the chat input and file name
+    // For now, we'll just return them in the response
+
+    Ok(AxumJson(json!({
+        "chatInput": chat_input,
+        "fileName": file_name,
+    })))
 }
 
 async fn add_document(Json(mut doc): Json<Document>) -> AxumJson<String> {
