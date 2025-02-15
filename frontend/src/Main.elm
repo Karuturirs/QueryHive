@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, div, input, text, textarea, form)
-import Html.Attributes exposing (placeholder, value, type_)
+import Html.Attributes exposing (placeholder, value, type_ , class)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Json.Decode as Decode
@@ -14,6 +14,7 @@ import Json.Encode as Encode
 type alias Model =
     { chatInput : String
     , response : Maybe String
+    , darkMode : Bool
     }
 
 
@@ -21,6 +22,7 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     ( { chatInput = ""
       , response = Nothing
+      , darkMode = True
       }
     , Cmd.none
     )
@@ -33,6 +35,7 @@ type Msg
     | Submit
     | SendData
     | DataSent (Result Http.Error String)
+    | ToggleDarkMode
 
 
 -- UPDATE
@@ -65,7 +68,9 @@ update msg model =
 
         DataSent (Err _) ->
             ( { model | response = Just "Failed to send data" }, Cmd.none )
-
+            
+        ToggleDarkMode ->
+            ( { model | darkMode = not model.darkMode }, Cmd.none )
 
 -- VIEW
 
@@ -73,23 +78,23 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ form [ onSubmit SendData ]
-            [ textarea
-                [ placeholder "Enter your message..."
-                , value model.chatInput
-                , onInput UpdateChatInput
+    div[][
+        form [ onSubmit SendData ]
+                [ textarea
+                    [ placeholder "Enter your message..."
+                    , value model.chatInput
+                    , onInput UpdateChatInput
+                    ]
+                    []
+                , button [ type_ "submit" ] [ text "Send" ]
                 ]
-                []
-            , button [ type_ "submit" ] [ text "Send" ]
-            ]
-        , case model.response of
-            Just response ->
-                div [] [ text response ]
+            , case model.response of
+                Just response ->
+                    div [] [ text response ]
 
-            Nothing ->
-                text ""
-        ]
+                Nothing ->
+                    text ""
+    ]
 
 -- MAIN
 

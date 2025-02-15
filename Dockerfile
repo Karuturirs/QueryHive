@@ -16,6 +16,8 @@ FROM rust:1.75 AS backend-builder
 WORKDIR /backend
 COPY backend/ .
 COPY --from=frontend-builder /frontend/dist/main.js  /backend/static/
+COPY --from=frontend-builder /frontend/index.html  /backend/static/
+COPY --from=frontend-builder /frontend/styles.css  /backend/static/
 
 RUN cargo build --release
 
