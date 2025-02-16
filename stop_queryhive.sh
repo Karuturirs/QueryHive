@@ -22,5 +22,5 @@ echo "Stopping the frontend..."
 stop_process_by_pid_file "./frontend.pid"
 
 # Stop Docker containers
-echo "Stopping Elasticsearch and Kibana..."
+echo "Stopping Elasticsearch, Kibana and Eland..."
 docker-compose stop
