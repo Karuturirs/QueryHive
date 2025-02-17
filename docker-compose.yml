@@ -12,6 +12,8 @@ services:
       - elasticsearch-data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
+    networks:
+      - hive-network
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.17.2
@@ -22,12 +24,20 @@ services:
       - "5601:5601"
     depends_on:
       - elasticsearch
+    networks:
+      - hive-network
     
   eland:
     image: docker.elastic.co/eland/eland:latest
     container_name: hive-eland
-    network_mode: "bridge"
-    command: ["sleep", "infinity"]
+    depends_on:
+      - elasticsearch
+    networks:
+      - hive-network
+
+networks:
+  hive-network:
+    driver: bridge
 
 volumes:
   elasticsearch-data:

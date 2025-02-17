@@ -10,16 +10,26 @@ is_container_running() {
     fi
 }
 
+# Function to check if Elasticsearch is ready
+is_elasticsearch_ready() {
+    curl -s http://localhost:9200/_cluster/health | grep -q '"status":"yellow\|greeen"'
+}
+
 # Check if Elasticsearch is running
 if is_container_running "hive-es"; then
     echo "Elasticsearch is already running."
 else
     echo "Starting Elasticsearch..."
     docker-compose up -d elasticsearch
-    # Wait for Elasticsearch and Kibana to be ready
-    echo "Waiting for Elasticsearch to be ready..."
-    sleep 10  # Adjust the sleep duration as needed
 fi
+
+# Wait for Elasticsearch to be ready
+echo "Waiting for Elasticsearch to be ready..."
+until is_elasticsearch_ready; do
+    echo "Elasticsearch is not ready yet. Waiting..."
+    sleep 10
+done
+echo "Elasticsearch is ready."
 
 # Check if Kibana is running
 if is_container_running "hive-kibana"; then
