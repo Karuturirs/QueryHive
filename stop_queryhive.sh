@@ -13,6 +13,19 @@ stop_process_by_pid_file() {
     fi
 }
 
+
+# Parse command-line arguments
+NO_DOCKER=false
+while [ "$1" != "" ]; do
+    case $1 in
+        --no-docker ) NO_DOCKER=true
+                      ;;
+        * )           echo "Invalid option: $1"
+                      exit 1
+    esac
+    shift
+done
+
 # Stop the backend
 echo "Stopping the backend..."
 stop_process_by_pid_file "./backend.pid"
@@ -21,6 +34,11 @@ stop_process_by_pid_file "./backend.pid"
 echo "Stopping the frontend..."
 stop_process_by_pid_file "./frontend.pid"
 
-# Stop Docker containers
-echo "Stopping Elasticsearch, Kibana and Eland..."
-docker-compose stop
+
+# Stop Docker containers if the --no-docker flag is not set
+if [ "$NO_DOCKER" = false ]; then
+    echo "Stopping Elasticsearch, Kibana and Eland..."
+    docker-compose stop
+else
+    echo "Skipping Docker container stop."
+fi
