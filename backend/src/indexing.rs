@@ -194,7 +194,7 @@ fn read_file_content(path: &Path) -> io::Result<String> {
                 _ => String::new(),
             }).collect::<Vec<_>>().join("");
         }
-        "pdf" => {
+       /*  "pdf" => {
             let pdfium = Pdfium::bind_to_system_library()?;
             let document = pdfium.load_pdf_from_file(path)?;
             for page_index in 0..document.page_count() {
@@ -212,7 +212,7 @@ fn read_file_content(path: &Path) -> io::Result<String> {
             let mut docx_content = String::new();
             docx.read_to_string(&mut docx_content).unwrap();
             content.push_str(&docx_content);
-        }
+        } */
         _ => {
             let mut file = File::open(path)?;
             file.read_to_string(&mut content)?;
