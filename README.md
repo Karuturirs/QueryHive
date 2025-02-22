@@ -60,3 +60,12 @@ export RUST_LOG=info  # This will enable logs at info level and higher
 export APP_ENV=local
 cargo run
 
+
+
+#### TODO List
+
+- [ ] UI chat screen to be max
+- [ ] remove toggle button on screen and make it radio
+- [ ] work on llm
+- [ ] why indexing not started on application start
+- [ ] 
