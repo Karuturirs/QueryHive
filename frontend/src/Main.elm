@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, div, input, text, textarea, form)
-import Html.Attributes exposing (placeholder, value, type_ , class)
+import Html.Attributes exposing (placeholder, value, type_, class, style)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Json.Decode as Decode
@@ -13,7 +13,7 @@ import Json.Encode as Encode
 
 type alias Model =
     { chatInput : String
-    , response : Maybe String
+    , messages : List String
     , darkMode : Bool
     }
 
@@ -21,7 +21,7 @@ type alias Model =
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( { chatInput = ""
-      , response = Nothing
+      , messages = []
       , darkMode = True
       }
     , Cmd.none
@@ -55,7 +55,7 @@ update msg model =
                     Encode.object
                         [ ( "chatInput", Encode.string model.chatInput ) ]
             in
-            ( model
+            ( { model | messages = model.messages ++ [ "You: " ++ model.chatInput ], chatInput = "" }
             , Http.post
                 { url = "http://localhost:3001/chat"
                 , body = Http.jsonBody jsonBody
@@ -64,37 +64,50 @@ update msg model =
             )
 
         DataSent (Ok response) ->
-            ( { model | response = Just response }, Cmd.none )
+            ( { model | messages = model.messages ++ [ "AI: " ++ response ] }, Cmd.none )
 
         DataSent (Err _) ->
-            ( { model | response = Just "Failed to send data" }, Cmd.none )
+            ( { model | messages = model.messages ++ [ "AI: Failed to send data" ] }, Cmd.none )
             
         ToggleDarkMode ->
             ( { model | darkMode = not model.darkMode }, Cmd.none )
 
 -- VIEW
 
--- VIEW
-
 view : Model -> Html Msg
 view model =
-    div[][
-        form [ onSubmit SendData ]
+    div [ style "background-color" (if model.darkMode then "#121212" else "#ffffff")
+        , style "color" (if model.darkMode then "#ffffff" else "#000000")
+        , style "padding" "20px"
+        , style "border-radius" "10px"
+        , style "max-width" "600px"
+        , style "margin" "0 auto"
+        ]
+        [ button [ onClick ToggleDarkMode, style "margin-bottom" "20px" ] [ text "Toggle Dark Mode" ]
+        , div [ style "border" "1px solid #ccc"
+              , style "border-radius" "10px"
+              , style "padding" "20px"
+              , style "background-color" (if model.darkMode then "#333333" else "#f9f9f9")
+              , style "max-height" "400px"
+              , style "overflow-y" "auto"
+              , style "margin-bottom" "20px"
+              ]
+            [ div []
+                (List.map (\msg -> div [ style "margin-bottom" "10px" ] [ text msg ]) model.messages)
+            , form [ onSubmit SendData ]
                 [ textarea
                     [ placeholder "Enter your message..."
                     , value model.chatInput
                     , onInput UpdateChatInput
+                    , style "width" "100%"
+                    , style "height" "100px"
+                    , style "margin-bottom" "10px"
                     ]
                     []
-                , button [ type_ "submit" ] [ text "Send" ]
+                , button [ type_ "submit", style "display" "block", style "width" "100%" ] [ text "Send" ]
                 ]
-            , case model.response of
-                Just response ->
-                    div [] [ text response ]
-
-                Nothing ->
-                    text ""
-    ]
+            ]
+        ]
 
 -- MAIN
 

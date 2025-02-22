@@ -2,6 +2,7 @@ use axum::{
     extract::{Json, Query, State},
     http::StatusCode,
     response::Json as AxumJson,
+    response::sse::{Event, Sse},
     routing::{get, get_service, post},
     Router,
 };
@@ -17,6 +18,10 @@ use crate::health::{liveness, readiness, health_check};
 use crate::config::Config;
 use crate::metrics::metrics;
 use chrono::Utc;
+use futures::stream::{Stream, StreamExt};
+use std::convert::Infallible;
+use std::time::Duration;
+use tokio::time::interval;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct SearchParams {
@@ -24,10 +29,9 @@ struct SearchParams {
 }
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Deserialize)]
 struct ChatInput {
     chatInput: String,
-    fileName: Option<String>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -73,7 +77,7 @@ pub async fn run(config: Config) {
 
     let app = Router::new()
         .route("/search", get(query))
-        .route("/chat", post(chat))
+        .route("/chat", post(chat_handler))
         .route("/documents", post(add_document).get(get_documents))
         .layer(cors)
         .with_state(config);
@@ -104,18 +108,21 @@ async fn query(State(state): State<Config>, Query(params): Query<SearchParams>) 
     Ok(AxumJson(json!({ "results": results })))
 }
 
-async fn chat(Json(payload): Json<ChatInput>) -> Result<AxumJson<Value>, (StatusCode, AxumJson<Value>)> {
-    // Process the chat input
-    let chat_input = payload.chatInput;
-    let file_name = payload.fileName.unwrap_or_else(|| "No file attached".to_string());
+async fn chat_handler(Json(payload): Json<ChatInput>) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
+    let mut interval = interval(Duration::from_secs(1));
+    let chat_input = payload.chatInput.clone();
 
-    // Here you can add your logic to process the chat input and file name
-    // For now, we'll just return them in the response
+    let stream = async_stream::stream! {
+        yield Ok(Event::default().data(format!("AI: Processing '{}'", chat_input)));
+        interval.tick().await;
+        yield Ok(Event::default().data("AI: Response part 1"));
+        interval.tick().await;
+        yield Ok(Event::default().data("AI: Response part 2"));
+        interval.tick().await;
+        yield Ok(Event::default().data("AI: Response part 3"));
+    };
 
-    Ok(AxumJson(json!({
-        "chatInput": chat_input,
-        "fileName": file_name,
-    })))
+    Sse::new(stream)
 }
 
 async fn add_document(Json(mut doc): Json<Document>) -> AxumJson<String> {
