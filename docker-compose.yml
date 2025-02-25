@@ -1,43 +1,25 @@
 version: '3.8'
 
 services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
-    container_name: hive-es
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - xpack.license.self_generated.type=basic
+  ollama:
+    build: ./ollama  # Use the custom Dockerfile in the 'ollama' directory
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
     volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-    networks:
-      - hive-network
+      - ollama_data:/root/.ollama  # Persist model downloads
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.17.2
-    container_name: hive-kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=http://hive-es:9200
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
     ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-    networks:
-      - hive-network
-    
-  eland:
-    image: docker.elastic.co/eland/eland:latest
-    container_name: hive-eland
-    depends_on:
-      - elasticsearch
-    networks:
-      - hive-network
-
-networks:
-  hive-network:
-    driver: bridge
+      - "6333:6333"
+      - "6334:6334"
+    restart: unless-stopped
+    volumes:
+      - qdrant_storage:/qdrant/storage
 
 volumes:
-  elasticsearch-data:
+  ollama_data:
+  qdrant_storage:
