@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   ollama:
-    build: ./ollama  # Use the custom Dockerfile in the 'ollama' directory
+    #build: ./ollama  # Use the custom Dockerfile in the 'ollama' directory
+    image: ollama/ollama
     container_name: ollama
     ports:
       - "11434:11434"
